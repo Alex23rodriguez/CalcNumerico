@@ -93,21 +93,21 @@ def shiftQR(A, tol, maxIter=1e3, symmetric=False):
     A = linear.hessenberg(A)
     eigenvalues = []
     if not symmetric:
-        while i < maxIter and len(A) > 1:
+        while i<maxIter and len(A)>1:
             [A,j] = shiftQRStep(A,tol)
             eigenvalues.append(A[-1,-1])
             A = A[:-1,:-1]
             i += j
         eigenvalues.append(A[0,0])
-        return eigenvalues,i
+        return np.array(eigenvalues),i
     else:
-        while i < maxIter and len(A) > 1:
+        while i<maxIter and len(A)>1:
             [A,j] = shiftQRStep(A,tol, True)
             eigenvalues.append(A[-1,-1])
             A = A[:-1,:-1]
             i += j
         eigenvalues.append(A[0,0])
-        return eigenvalues,i
+        return np.array(eigenvalues),i
 
 #SVD Methods
 def SVD(A):
