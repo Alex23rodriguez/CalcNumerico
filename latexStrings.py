@@ -1,17 +1,17 @@
 import numpy as np
 import scipy.linalg as linear
 
-def latexMatrix(M, matrixName, eq=True, complx=False, form='%0.0f'):
+def latexMatrix(M, matrixName, eq=True, complx=False, form='%0.0f', cmplxForm='%+0.0fi'):
     s=''
     if eq:
         s ='\\[ \n' + matrixName + ' = \n'
     s += '\\begin{pmatrix} \n'
     [rows, cols] = M.shape
     if complx:
-        form = form+form[0]+'+'+form[1:]
+        f = form+cmplxForm
         for i in range(rows):
             for j in range(cols):
-                s += (form % (M[i,j].real, A[i,j].imag)) + ' '
+                s += (f % (M[i,j].real, M[i,j].imag)) + ' '
                 
                 if not j+1 == cols:
                     s += '& '           
@@ -28,15 +28,15 @@ def latexMatrix(M, matrixName, eq=True, complx=False, form='%0.0f'):
         s += '\n \\]'
     return s
 
-def latexVector(v, vecName, eq=True, complx=False, form='%0.0f'):
+def latexVector(v, vecName, eq=True, complx=False, form='%0.0f', cmplxForm='%+0.0fi'):
     s=''
     if eq:
         s ='\\[ \n \\vec{' + vecName + '} = \n'
     s += '\\begin{pmatrix} \n'
     if complx:
-        form = form+form[0]+'+'+form[1:]
+        f = form+cmplxForm
         for x in np.nditer(v):
-            s += (form % (x.real,x.imag) + ' \\\\ \n')
+            s += (f % (x.real,x.imag) + ' \\\\ \n')
     else:
         for x in np.nditer(v):
             s += (form % (x.real) + ' \\\\ \n')
