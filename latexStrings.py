@@ -44,3 +44,21 @@ def latexVector(v, vecName, eq=True, complx=False, form='%0.0f', cmplxForm='%+0.
     if eq:
         s += '\n \\]'
     return s
+
+def latexList(l, listName, eq=True, cmplx=False, form='%0.0', cmplxForm='%+0.0fi'):
+	s=''
+    if eq:
+        s ='\\[ \n ' + listName + ' = \n'
+    s += '\\{ \n'
+    if complx:
+        f = form+cmplxForm
+        for x in np.nditer(v):
+            s += (f % (x.real,x.imag) + ', ')
+    else:
+        for x in np.nditer(v):
+            s += (form % (x.real) + ', ')
+	s = s[:-2]
+    s += '\\}'
+    if eq:
+        s += '\n \\]'
+    return s
