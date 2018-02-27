@@ -12,7 +12,6 @@ def latexMatrix(M, matrixName, eq=True, complx=False, form='%0.0f', cmplxForm='%
         for i in range(rows):
             for j in range(cols):
                 s += (f % (M[i,j].real, M[i,j].imag)) + ' '
-                
                 if not j+1 == cols:
                     s += '& '           
             s += '\\\\ \n'
@@ -45,19 +44,19 @@ def latexVector(v, vecName, eq=True, complx=False, form='%0.0f', cmplxForm='%+0.
         s += '\n \\]'
     return s
 
-def latexList(l, listName, eq=True, cmplx=False, form='%0.0', cmplxForm='%+0.0fi'):
-	s=''
+def latexList(l, listName, eq=True, complx=False, form='%0.0', cmplxForm='%+0.0fi'):
+    s=''
     if eq:
         s ='\\[ \n ' + listName + ' = \n'
     s += '\\{ \n'
     if complx:
         f = form+cmplxForm
-        for x in np.nditer(v):
+        for x in l:
             s += (f % (x.real,x.imag) + ', ')
     else:
-        for x in np.nditer(v):
+        for x in l:
             s += (form % (x.real) + ', ')
-	s = s[:-2]
+    s = s[:-2]
     s += '\\}'
     if eq:
         s += '\n \\]'
