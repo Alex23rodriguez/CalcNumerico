@@ -478,7 +478,12 @@ def shiftQR(A, tol=1e-7, maxIter=1e3, symmetric=False):
         #The eigenvalue list is reversed so that the order matches with the eigenvectors in the columns of V
         return np.array(eigenvalues[::-1]), V, i
 
-#Auxiliary function, pads A with i rows and columns, adding 1 in the diagonal 
+#SVD Methods
+def SVD(A):
+    print('SVD')
+    
+#Auxiliary Functions
+#Pads A with i rows and columns, adding 1 in the diagonal 
 def pad_diag(A,i):
     
     if i>0:
@@ -488,7 +493,10 @@ def pad_diag(A,i):
         B = A
     
     return B
- 
-#SVD Methods
-def SVD(A):
-    print('SVD')
+
+#Orders a vector according to the magnitud of its elements (greatest first), then permutes the matrix given accordingly
+def pairSort(v, A):
+    order = np.argsort(v)[::-1]
+    v = [v[i] for i in order]
+    A = np.matrix([A[:,i] for i in order]).T
+    return v, A
