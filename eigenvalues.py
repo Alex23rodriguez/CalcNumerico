@@ -2,7 +2,7 @@ import numpy as np
 import scipy.linalg as linear
 
 #Power Methods
-def powerMethod(A, q, tol=1e-7, maxIter=1e3):
+def powerMethod(A, q, maxIter=1e3, tol=1e-7):
     """
     Applies the power method to a matrix A with an initial guess q to approximate the dominant eigenpair. 
     The method generates the sequence::
@@ -59,7 +59,7 @@ def powerMethod(A, q, tol=1e-7, maxIter=1e3):
     
     return w, l, i
 
-def inversePower(A, q, tol=1e-7, maxIter=1e3):
+def inversePower(A, q, maxIter=1e3, tol=1e-7):
     """
     Applies the inverse power method to a matrix A with an initial guess q to approximate the smallest eigenpair (i.e. the dominant eigenpair of A^-1). 
     The method generates the sequence::
@@ -117,7 +117,7 @@ def inversePower(A, q, tol=1e-7, maxIter=1e3):
     #The returned eigenvalue is 1/l, since l is approximating the dominant eigenvalue of A^-1
     return w, 1/l, i
         
-def inversePowerShift(A, q, r, tol=1e-7, maxIter=1e3):
+def inversePowerShift(A, q, r, maxIter=1e3, tol=1e-7):
     """
     Applies the inverse power method with static shift to a matrix A with an initial guess q and a shift r to approximate an eigenpair. 
     The method generates the sequence::
@@ -177,7 +177,7 @@ def inversePowerShift(A, q, r, tol=1e-7, maxIter=1e3):
     #The returned eigenvalue is (1/l)+r, since l is approximating the dominant eigenvalue of (A-rI)^-1
     return w, (1/l+r), i
 
-def inversePowerRayleigh(A, q, tol=1e-7, maxIter=1e3):
+def inversePowerRayleigh(A, q, maxIter=1e3, tol=1e-7):
     """
     Applies the inverse power method with dynamic shift to a matrix A with an initial guess q to approximate an eigenpair. 
     The method generates the sequence::
@@ -234,7 +234,7 @@ def inversePowerRayleigh(A, q, tol=1e-7, maxIter=1e3):
     return w, l, i
 
 #QR Methods
-def simpleQR(A, tol=1e-7, maxIter=1e3, symmetric=False):
+def simpleQR(A, maxIter=1e3, tol=1e-7, symmetric=False):
     """
     Applies the simple QR algorithm to a matrix A, which generates the sequence::
         A_(i)=QR
@@ -309,7 +309,7 @@ def simpleQR(A, tol=1e-7, maxIter=1e3, symmetric=False):
         
         return A, V, i
 
-def shiftQRStep(A, tol=1e-7, maxIter=1e3, symmetric=False):
+def shiftQRStep(A, maxIter=1e3, tol=1e-7, symmetric=False):
     """
     Applies one step of the QR algorithm with dynamic to a matrix A, which generates the sequence::
         (A_(i)+rI)=QR
@@ -388,7 +388,7 @@ def shiftQRStep(A, tol=1e-7, maxIter=1e3, symmetric=False):
         
         return A, V, i
 
-def shiftQR(A, tol=1e-7, maxIter=1e3, symmetric=False):
+def shiftQR(A, maxIter=1e3, tol=1e-7, symmetric=False):
     """
     Applies the QR algorithm with dynamic shift to a matrix A, which consists using the ``shiftQRStep`` function on A, then taking the resulting eigenvalue
     and reducing the dimension of A to (M-1,M-1) until A becomes a single number.
