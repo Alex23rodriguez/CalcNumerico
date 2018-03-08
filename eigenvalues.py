@@ -479,9 +479,50 @@ def shiftQR(A, tol=1e-7, maxIter=1e3, symmetric=False):
         return np.array(eigenvalues[::-1]), V, i
 
 #SVD Methods
-def SVD(A):
-    print('SVD')
+def SVD(A, tol=1e-7):
+    '''
+    Given a matrix A, return its Singular Value Decomposition. That is, A i
     
+    and reducing the dimension of A to (M-1,M-1) until A becomes a single number.
+    This algorithm converges to an upper triangle matrix with the eigenvalues of A in the diagonal. If A is symmetric, the Q matrices of each iteration can be accumulated to approximate the normal eigenvectors
+    
+    Parameters
+    ----------
+    A : (M, N) double ndarray
+        A real matrix whose SVD will be calculated.
+    tol : double, optional
+         Cutoff point that determines 'important' singular values. Default is 1e-7.
+        
+    Returns
+    -------
+    U : (M, k) double ndarray
+        A unitary matrix that contains the first k left singular vectors of A.
+    S : (k, k) double ndarray
+        A square real diagonal matrix whose elements are the k singular values of A greater that the tolerance. 
+    V : (k, N) 
+        A unitary matrix that contains the first k right singular vectors of A.
+    '''
+    rows, cols = A.shape
+    if rows > cols: # Method procedes with lower rank matrix between AA* and A*A
+        L, U, _ = shiftQR(np.dot(A,A.T), symmetric=True)
+    else:
+        L, V, _ = shiftQR(np.dot(A.T,A), symmetric = True)
+    
+    singularValues = [x**0.5 for x in L] # The singular values of A are the square root of the eigenvalues returned
+    k = 0
+    while k < len(singularValues) and singularValues[k] > tol: # Determine cutoff point 
+        k+=1
+        
+    S = np.diag(singularValues[:k])
+    
+    if rows > cols: # Calculate remaining singular vectors depending on path chosen at the beginning
+        U = U[:,:k]
+        V = np.array([1/singularValues[i]*A.T.dot(U[:,i]) for i in range(k)]).T
+    else:
+        V = V[:,:k]
+        U = np.array([1/singularValues[i]*A.dot(V[:,i]) for i in range(k)]).T
+    return U, S, V
+
 #Auxiliary Functions
 #Pads A with i rows and columns, adding 1 in the diagonal 
 def pad_diag(A,i):
