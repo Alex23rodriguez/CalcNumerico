@@ -10,7 +10,6 @@ import eigenvalues as ev
 # # Ejercicio 1
 
 # Tenemos la matriz A y el vector q_0 definidos como:
-
 A = np.array([[1,1,2],[-1,9,3],[0,-1,3]])
 q = np.array([1,1,1])
 
