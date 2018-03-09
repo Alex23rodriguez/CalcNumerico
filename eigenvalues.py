@@ -481,12 +481,12 @@ def shiftQR(A, tol=1e-7, maxIter=1e3, calcQ=False):
         
         #Add the last value of A to the eigenvalue list and transform it into an array
         l.append(A[0,0])
+        l.reverse()
         l = np.array(l)
         
         #Order eigenvalues and V according to the magnitude of the eigenvalues
         [l, V] = pairSort(l, V)
         
-        #The eigenvalue list is reversed so that the order matches with the eigenvectors in the columns of V
         return l, V, i
 
 #SVD Methods
@@ -514,21 +514,23 @@ def SVD(A, tol=1e-7):
     rows, cols = A.shape
     
     #Method procedes with lower rank matrix between AA* and A*A
-    if rows > cols: 
+    if rows < cols: 
         [L, U, _ ] = shiftQR(np.dot(A,A.T), calcQ=True)
     else:
         [L, V, _ ] = shiftQR(np.dot(A.T,A), calcQ = True)
     
-    #The singular values of A are the square root of the eigenvalues returned
-    singularValues = [x**0.5 for x in L] 
+    
+    #Cutoff eigenvalues smaller than tol^2
     k = 0
-    while k < len(singularValues) and singularValues[k] > tol: # Determine cutoff point 
+    while k < len(L) and L[k] > tol**2: 
         k+=1
-
+    
+    #The singular values of A are the square root of the eigenvalues returned
+    singularValues = [x**0.5 for x in L[:k]] 
     S = np.diag(singularValues[:k])
     
     #Calculate remaining singular vectors depending on path chosen at the beginning
-    if rows > cols: 
+    if rows < cols: 
         U = U[:,:k]
         V = np.array([1/singularValues[i]*A.T.dot(U[:,i]) for i in range(k)]).T
     else:
