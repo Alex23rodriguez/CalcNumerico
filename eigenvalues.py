@@ -234,7 +234,7 @@ def inversePowerRayleigh(A, q, tol=1e-7, maxIter=1e3):
     return w, l, i
 
 #QR Methods
-def simpleQR(A, tol=1e-7, maxIter=1e3, symmetric=False):
+def simpleQR(A, tol=1e-7, maxIter=1e3, calcQ=False):
     """
     Applies the simple QR algorithm to a matrix A, which generates the sequence::
         A_(i)=QR
@@ -250,15 +250,15 @@ def simpleQR(A, tol=1e-7, maxIter=1e3, symmetric=False):
         Maximum relative error. Default is 1e-7.
     maxIter : int, optional
         Maximum number of iterations. Default is 1e3.
-    symmetric : bool, optional
-        Whether A is symmetric or not. Default is False.
+    calcQ : bool, optional
+        Whether to accumulate Q matrices or not. Default is False.
     
     Returns
     -------
-    A : (M,M) double ndarray
-        The approximated real upper triangle matrix, containing the eigenvalues in the diagonal
+    l : (M) double ndarray
+        The eigenvalues of A
     V : (M,M) double ndarray
-        The normal eigenvectors of A. Only returned if ``symmetric=True``.
+        The normal eigenvectors of A. Only returned if ``calcQ=True``.
     i : int
         The number of iterations to reach the approximation.
     """
@@ -267,8 +267,8 @@ def simpleQR(A, tol=1e-7, maxIter=1e3, symmetric=False):
     i = 0
     flag = False
     
-    #Decide whether or not A is a symmetric based on the parameter
-    if not symmetric:
+    #Decide whether or not to accumulate Q based on the parameter
+    if not calcQ:
         
         while i < maxIter and not flag :
             
@@ -284,7 +284,9 @@ def simpleQR(A, tol=1e-7, maxIter=1e3, symmetric=False):
             flag = linear.norm(A.diagonal(-1)) < tol
             i += 1
         
-        return A, i
+        #Store the eigenvalues in l
+        l = A.diagonal()
+        return absSort(l), i
         
     else:
         
@@ -307,9 +309,13 @@ def simpleQR(A, tol=1e-7, maxIter=1e3, symmetric=False):
             flag = linear.norm(A.diagonal(-1)) < tol
             i += 1
         
-        return A, V, i
+        #Order l and V according to the magnitude of the eigenvalues
+        l = A.diagonal()
+        [l, V] = pairSort(l, V)
+        
+        return l, V, i
 
-def shiftQRStep(A, tol=1e-7, maxIter=1e3, symmetric=False):
+def shiftQRStep(A, tol=1e-7, maxIter=1e3, calcQ=False):
     """
     Applies one step of the QR algorithm with dynamic to a matrix A, which generates the sequence::
         (A_(i)+rI)=QR
@@ -324,15 +330,15 @@ def shiftQRStep(A, tol=1e-7, maxIter=1e3, symmetric=False):
         Maximum relative error. Default is 1e-7.
     maxIter : int, optional
         Maximum number of iterations. Default is 1e3.
-    symmetric : bool, optional
-        Whether A is symmetric or not. Default is False.
+    calcQ : bool, optional
+        Whether to accumulate Q matrices or not. Default is False.
     
     Returns
     -------
     A : (M,M) double ndarray
         The matrix A, with the last row of A all zeroes except the eigenvalue in the last entry.
     V : (M, M) double ndarray
-        Accumulated Q matrices. Only returned if ``symmetric=True``.
+        Accumulated Q matrices. Only returned if ``calcQ=True``.
     i : int
         The number of iterations to reach the approximation.
     """
@@ -341,8 +347,8 @@ def shiftQRStep(A, tol=1e-7, maxIter=1e3, symmetric=False):
     i = 0
     flag = False
     
-    #Decide whether or not A is a symmetric based on the parameter
-    if not symmetric:
+    #Decide whether or not to accumulate Q based on the parameter
+    if not calcQ:
         
         while i < maxIter and not flag:
             
@@ -370,7 +376,7 @@ def shiftQRStep(A, tol=1e-7, maxIter=1e3, symmetric=False):
         while i < maxIter and not flag:
             
             """
-            A step of the dynamic shift step QR algorithm for symmetric matrices:
+            A step of the dynamic shift step QR algorithm:
                 Calculate the shift with using the Wilkinson Shift
                 Calculate the QR decomposition of A-shift*I (A-shift*I = Q*R)
                 A = R*Q + shift*I
@@ -388,7 +394,7 @@ def shiftQRStep(A, tol=1e-7, maxIter=1e3, symmetric=False):
         
         return A, V, i
 
-def shiftQR(A, tol=1e-7, maxIter=1e3, symmetric=False):
+def shiftQR(A, tol=1e-7, maxIter=1e3, calcQ=False):
     """
     Applies the QR algorithm with dynamic shift to a matrix A, which consists using the ``shiftQRStep`` function on A, then taking the resulting eigenvalue
     and reducing the dimension of A to (M-1,M-1) until A becomes a single number.
@@ -402,15 +408,15 @@ def shiftQR(A, tol=1e-7, maxIter=1e3, symmetric=False):
         Maximum relative error per step. Default is 1e-7.
     maxIter : int, optional
         Maximum number of iterations. Default is 1e3.
-    symmetric : bool, optional
-        Whether A is symmetric or not. Default is False.
+    calcQ : bool, optional
+        Whether to accumulate Q matrices or not. Default is False.
     
     Returns
     -------
-    A : (M) double ndarray
+    eigenvalues : (M) double ndarray
         The eigenvalues of A
     V : (M, M) double ndarray
-        The normal eigenvectors of A. Only returned if ``symmetric=True``.
+        The normal eigenvectors of A. Only returned if ``calcQ=True``.
     i : int
         The number of iterations to reach the approximation.
     """
@@ -420,10 +426,10 @@ def shiftQR(A, tol=1e-7, maxIter=1e3, symmetric=False):
     
     #Reduce A to its hessenberg form and initialize an empty list for the eigenvalues
     [A, QH] = linear.hessenberg(A, True)
-    eigenvalues = []
+    l = []
     
-    #Decide whether or not A is a symmetric based on the parameter
-    if not symmetric:
+    #Decide whether to accumulate Q based on the parameter
+    if not calcQ:
         
         while i < maxIter and len(A) > 1:
             
@@ -434,17 +440,18 @@ def shiftQR(A, tol=1e-7, maxIter=1e3, symmetric=False):
                 Reduce A from a m x m matrix to a (m-1) x (m-1) matrix
             """
             [A, j] = shiftQRStep(A, tol, maxIter)
-            eigenvalues.append(A[-1,-1])
+            l.append(A[-1,-1])
             A = A[:-1,:-1]
             
             #Accumulate the number of steps in i
             i += j
         
-        #Add the last value of A to the eigenvalue list
-        eigenvalues.append(A[0,0])
+        #Add the last value of A to the eigenvalue list and transform it into an array
+        l.append(A[0,0])
+        l = np.array(l)
         
-        #The eigenvalue list is reversed for consistency with the symmetric version
-        return np.array(eigenvalues[::-1]), i
+        #The eigenvalue list is ordered according to magnitude
+        return absSort(l), i
         
     else:
         
@@ -463,7 +470,7 @@ def shiftQR(A, tol=1e-7, maxIter=1e3, symmetric=False):
                 V = V*Q
             """
             [A, Q, j] = shiftQRStep(A, tol, maxIter, True)
-            eigenvalues.append(A[-1,-1])
+            l.append(A[-1,-1])
             A = A[:-1,:-1]
             Q = pad_diag(Q,k)
             V = V.dot(Q)
@@ -472,19 +479,20 @@ def shiftQR(A, tol=1e-7, maxIter=1e3, symmetric=False):
             k += 1
             i += j
         
-        #Add the last value of A to the eigenvalue list
-        eigenvalues.append(A[0,0])
+        #Add the last value of A to the eigenvalue list and transform it into an array
+        l.append(A[0,0])
+        l = np.array(l)
+        
+        #Order eigenvalues and V according to the magnitude of the eigenvalues
+        [l, V] = pairSort(l, V)
         
         #The eigenvalue list is reversed so that the order matches with the eigenvectors in the columns of V
-        return np.array(eigenvalues[::-1]), V, i
+        return l, V, i
 
 #SVD Methods
 def SVD(A, tol=1e-7):
-    '''
-    Given a matrix A, return its Singular Value Decomposition. That is, A i
-    
-    and reducing the dimension of A to (M-1,M-1) until A becomes a single number.
-    This algorithm converges to an upper triangle matrix with the eigenvalues of A in the diagonal. If A is symmetric, the Q matrices of each iteration can be accumulated to approximate the normal eigenvectors
+    """
+    Given a matrix A, return its Singular Value Decomposition. That is, AV=SU
     
     Parameters
     ----------
@@ -501,21 +509,26 @@ def SVD(A, tol=1e-7):
         A square real diagonal matrix whose elements are the k singular values of A greater that the tolerance. 
     V : (k, N) 
         A unitary matrix that contains the first k right singular vectors of A.
-    '''
-    rows, cols = A.shape
-    if rows > cols: # Method procedes with lower rank matrix between AA* and A*A
-        L, U, _ = shiftQR(np.dot(A,A.T), symmetric=True)
-    else:
-        L, V, _ = shiftQR(np.dot(A.T,A), symmetric = True)
+    """
     
-    singularValues = [x**0.5 for x in L] # The singular values of A are the square root of the eigenvalues returned
+    rows, cols = A.shape
+    
+    #Method procedes with lower rank matrix between AA* and A*A
+    if rows > cols: 
+        [L, U, _ ] = shiftQR(np.dot(A,A.T), calcQ=True)
+    else:
+        [L, V, _ ] = shiftQR(np.dot(A.T,A), calcQ = True)
+    
+    #The singular values of A are the square root of the eigenvalues returned
+    singularValues = [x**0.5 for x in L] 
     k = 0
     while k < len(singularValues) and singularValues[k] > tol: # Determine cutoff point 
         k+=1
-        
+
     S = np.diag(singularValues[:k])
     
-    if rows > cols: # Calculate remaining singular vectors depending on path chosen at the beginning
+    #Calculate remaining singular vectors depending on path chosen at the beginning
+    if rows > cols: 
         U = U[:,:k]
         V = np.array([1/singularValues[i]*A.T.dot(U[:,i]) for i in range(k)]).T
     else:
@@ -537,7 +550,13 @@ def pad_diag(A,i):
 
 #Orders a vector according to the magnitud of its elements (greatest first), then permutes the matrix given accordingly
 def pairSort(v, A):
-    order = np.argsort(v)[::-1]
+    order = np.argsort(abs(v))[::-1]
     v = np.array([v[i] for i in order])
     A = np.array([A[:,i] for i in order]).T
     return v, A
+
+#Orders a vector according to itsthe magnitude of its elements
+def absSort(v):
+    order = np.argsort(abs(v))[::-1]
+    v = np.array([v[i] for i in order])
+    return v
