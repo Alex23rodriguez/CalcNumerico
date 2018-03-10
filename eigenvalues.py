@@ -521,8 +521,9 @@ def SVD(A, tol=1e-7):
     
     
     #Cutoff eigenvalues smaller than tol^2
+    tol2 = tol**2
     k = 0
-    while k < len(L) and L[k] > tol**2: 
+    while k < len(L) and L[k] > tol2: 
         k+=1
     
     #The singular values of A are the square root of the eigenvalues returned
