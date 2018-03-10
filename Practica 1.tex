@@ -274,13 +274,13 @@
 
     \begin{document}
     \title{Practica 1}
-    \author{Gonzalez Borja, Miguel \\ Illescas Arizti, Rodrigo \\ Meyer Mañon, Juan Carlos\\ Rodriguez Orozco, Alejandro}
+    \author{González Borja, Miguel \\ Illescas Arizti, Rodrigo \\ Meyer Mañón, Juan Carlos\\ Rodríguez Orozco, Alejandro}
     \date{11 / Marzo / 2018}
 
     \maketitle
     
     \section*{Introducci\'on}
-A continuacion los ejercicios de la practica. Todos fueron realizados en Python 3.6 utilizando los paquetes \textit{numpy} y \textit{scipy.linalg}. Tambien se incluye un cuaderno de IPython para cada ejercicio dentro de la carpeta Ejercicios, junto con los scripts \textit{.py}. Cada uno de estos utiliza los siguientes imports:
+A continuación los ejercicios de la práctica. Todos fueron realizados en Python 3.6 utilizando los paquetes \textit{numpy} y \textit{scipy.linalg}. También se incluye un cuaderno de IPython para cada ejercicio dentro de la carpeta Ejercicios, junto con los scripts \textit{.py}. Cada uno de estos utiliza los siguientes imports:
     
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{import} \PY{n+nn}{sys}
@@ -360,12 +360,12 @@ V =
 \end{pmatrix}
  \]
 
-Vemos que en efecto el metodo de la potencia calculo el eigenvector
+Vemos que en efecto el método de la potencia calculo el eigenvector
 dominante de la matriz. Esto se debe a que se cumplen las condiciones
-del metodo, es decir: 
+del método, es decir: 
 \begin{enumerate}
 \item A tiene un eigenvalor dominante (8.3545) 
-\item Nuestro vector inicial $q_0$ puede ser escrito como combinacion lineal
+\item Nuestro vector inicial $q_0$ puede ser escrito como combinación lineal
 de los eigenvectores de A con coeficientes todos distintos de 0
 \end{enumerate}
 
@@ -385,7 +385,7 @@ por:
  \]
 
 Y con esto queremos calcular las razones de convergencia en cada paso de la
-iteracion, dadas por:
+iteración, dadas por:
 \[ \widetilde{r} = \{r_i\}, \qquad r_i = \frac{\Vert q_{i}-v \Vert_\infty}{\Vert q_{i-1}-v \Vert_\infty}, \qquad i\in \{1,2,...,10\} \]
 
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -536,7 +536,7 @@ en adelante nos referiremos a \(\vec{v_3}\) por
 \end{pmatrix}
  \]
 
-Calculamos las razones de convergencia en cada paso de la iteracion,
+Calculamos las razones de convergencia en cada paso de la iteración,
 dadas por:
 \[ \widetilde{r} = \{r_i\}, \qquad r_i = \frac{\Vert q_{i}-v \Vert_\infty}{\Vert q_{i-1}-v \Vert_\infty}, \qquad i\in \{1,2,...,10\} \]
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -555,7 +555,7 @@ dadas por:
 0.752001, 0.966084, 0.853759, 0.678343, 0.495284, 0.404372, 0.373393, 0.363308, 0.359880\}
 \]
 
-Ahora veamos la razon de convergencia teórica, dada por:
+Ahora veamos la razón de convergencia teórica, dada por:
 \[ r = \left| \frac{\lambda_3}{\lambda_2} \right| = 0.35800909831776 \]
 Se oberva que, en efecto, \(r_{10}\) = \(0.359880\) es aproximademente
 la razón teórica \(r=0.35800909831776\)
@@ -628,7 +628,7 @@ a ninguno de los vectores de la matriz \(V\), por lo tanto
 los vectores de \(V\) con coeficientes todos distintos de 0, cumpliendo
 la segunda hipótesis del metodo, justificando asi la convergencia.
 
-Calculamos las razones de convergencia en cada paso de la iteracion, dadas por:
+Calculamos las razones de convergencia en cada paso de la iteración, dadas por:
 \[ \widetilde{r} = \{r_i\}, \qquad r_i = \frac{\Vert q_{i}-v \Vert_\infty}{\Vert q_{i-1}-v \Vert_\infty}, \qquad i\in \{1,2,...,10\} \]
 \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}2}]:} \PY{n}{ratios}\PY{o}{=}\PY{p}{[}\PY{p}{]}
@@ -648,7 +648,7 @@ Calculamos las razones de convergencia en cada paso de la iteracion, dadas por:
 & 0.085590, 0.050552, 0.061824, 0.056628, 0.062165\}
 \end{align*}
  
-Ahora veamos la razon de convergencia teórica, dada por:
+Ahora veamos la razón de convergencia teórica, dada por:
 \[ r = \left| \frac{\lambda_2-\rho_2}{\lambda_3-\rho_2} \right| = 0.05819972269618957 \]
 Observamos que las razones \(r_i\) comienzan a oscilar alrededor de
 \(r=0.05819972269618957\) (razón teórica) desde \(i=7\). Esto se debe a
@@ -742,7 +742,7 @@ Comparemos esto con los valores exactos, dados por:
 En efecto, vemos que los valores tienen alrededor de 15 cifras correctas
 con respecto a los calculados por \emph{scipy}
 
-¿Por qué converge tan rapido el metodo? Veamos todos los eigenvalores de
+¿Por qué converge tan rápido el metodo? Veamos todos los eigenvalores de
 la matriz con el shift \(\rho=3.6\):
 
  \begin{Verbatim}[commandchars=\\\{\}]
