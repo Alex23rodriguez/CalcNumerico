@@ -490,7 +490,7 @@ def shiftQR(A, tol=1e-7, maxIter=1e3, calcQ=False):
         return l, V, i
 
 #SVD Methods
-def SVD(A, tol=1e-7):
+def SVD(A, tol=1e-7, n = None):
     """
     Given a matrix A, return its Singular Value Decomposition. That is, AV=SU
     
@@ -500,7 +500,9 @@ def SVD(A, tol=1e-7):
         A real matrix whose SVD will be calculated.
     tol : double, optional
          Cutoff point that determines 'important' singular values. Default is 1e-7.
-        
+    n : integer, optional
+        Keeps only the first n singular values. Overrides tolerance of not None.
+
     Returns
     -------
     U : (M, k) double ndarray
@@ -520,11 +522,15 @@ def SVD(A, tol=1e-7):
         [L, V, _ ] = shiftQR(np.dot(A.T,A), calcQ = True)
     
     
-    #Cutoff eigenvalues smaller than tol^2
-    tol2 = tol**2
-    k = 0
-    while k < len(L) and L[k] > tol2: 
-        k+=1
+    if n == None:
+        #Cutoff eigenvalues smaller than tol^2
+        tol2 = tol**2
+        k = 0
+        while k < len(L) and L[k] > tol2: 
+            k+=1
+    else:
+        #Keep first n eigenvalues
+        k = n
     
     #The singular values of A are the square root of the eigenvalues returned
     singularValues = [x**0.5 for x in L[:k]] 
