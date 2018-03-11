@@ -501,7 +501,7 @@ def SVD(A, tol=1e-7, n = None):
     tol : double, optional
          Cutoff point that determines 'important' singular values. Default is 1e-7.
     n : integer, optional
-        Keeps only the first n singular values. Overrides tolerance of not None.
+        Keeps only the first n singular values. Overrides tolerance if not None.
 
     Returns
     -------
