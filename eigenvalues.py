@@ -414,7 +414,7 @@ def shiftQR(A, tol=1e-7, maxIter=1e3, calcQ=False):
     
     Returns
     -------
-    eigenvalues : (M) double ndarray
+    l : (M) double ndarray
         The eigenvalues of A
     V : (M, M) double ndarray
         The normal eigenvectors of A. Only returned if ``calcQ=True``.
@@ -440,7 +440,7 @@ def shiftQR(A, tol=1e-7, maxIter=1e3, calcQ=False):
                 Save the last value of the diagonal of A in the eigenvalue list
                 Reduce A from a m x m matrix to a (m-1) x (m-1) matrix
             """
-            [A, j] = shiftQRStep(A, tol, maxIter)
+            [A, j] = shiftQRStep(A, tol, maxIter-i)
             l.append(A[-1,-1])
             A = A[:-1,:-1]
             
@@ -470,7 +470,7 @@ def shiftQR(A, tol=1e-7, maxIter=1e3, calcQ=False):
                 Pad the accumulated Q matrices with zeros in order to match the original dimensions
                 V = V*Q
             """
-            [A, Q, j] = shiftQRStep(A, tol, maxIter, True)
+            [A, Q, j] = shiftQRStep(A, tol, maxIter-i, True)
             l.append(A[-1,-1])
             A = A[:-1,:-1]
             Q = pad_diag(Q,k)
