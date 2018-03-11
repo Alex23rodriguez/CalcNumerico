@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.linalg as linear
+import imageio
 
 #Power Methods
 def powerMethod(A, q, tol=1e-7, maxIter=1e3):
@@ -569,3 +570,35 @@ def absSort(v):
     order = np.argsort(abs(v))[::-1]
     v = np.array([v[i] for i in order])
     return v
+
+def makeNewImg(r, g, b, filepath='.\\aux.png'):
+    '''
+    Auxiliary function.
+    Reconstructs image given the SVD decomposition of the RGB matrices
+    Parameters
+    ----------
+    r : (u1, s1, v1) 
+        A tuple or list containing SVD decomposition of the red channel
+    g : (u2, s2, v2)
+        A tuple or list containing SVD decomposition of the green channel
+    b : (u3, s3, v3)
+        A tuple or list containing SVD decomposition of the blue channel
+    filepath : String
+        A string indicating the path in which to save the image
+
+    Returns
+    -------
+    newImg : (M,N) uint8 ndarray of the reconstructed image
+    '''
+    newRed = r[0].dot(r[1]).dot(r[2].T)
+    newGreen = g[0].dot(g[1]).dot(g[2].T)
+    newBlue = b[0].dot(b[1]).dot(b[2].T)
+    newImg = []
+    for i in range(len(newRed)):
+        newImg.append([])
+        for j in range(len(newRed[0])):
+            newImg[i].append([newRed[i][j], newGreen[i][j], newBlue[i][j]])
+            
+    imageio.imwrite(filepath, np.array(newImg)) #picture is saved and reloaded to effectivly parse it back to uint8
+    newImg=imageio.imread(filepath)
+    return newImg
