@@ -448,7 +448,8 @@ def shiftQR(A, tol=1e-7, maxIter=1e3, calcQ=False):
             i += j
         
         #Add the last value of A to the eigenvalue list and transform it into an array
-        l.append(A[0,0])
+        for i in range(len(A))[::-1]:
+            l.append(A[i,i])
         l = np.array(l)
         
         #The eigenvalue list is ordered according to magnitude
@@ -480,8 +481,9 @@ def shiftQR(A, tol=1e-7, maxIter=1e3, calcQ=False):
             k += 1
             i += j
         
-        #Add the last value of A to the eigenvalue list and transform it into an array
-        l.append(A[0,0])
+        #Add the remaining values of A's diagonal to the eigenvalue list and transform it into an array
+        for i in range(len(A))[::-1]:
+            l.append(A[i,i])
         l.reverse()
         l = np.array(l)
         
