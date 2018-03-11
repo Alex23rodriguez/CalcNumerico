@@ -448,8 +448,8 @@ def shiftQR(A, tol=1e-7, maxIter=1e3, calcQ=False):
             i += j
         
         #Add the last value of A to the eigenvalue list and transform it into an array
-        for i in range(len(A))[::-1]:
-            l.append(A[i,i])
+        for j in range(len(A))[::-1]:
+            l.append(A[j,j])
         l = np.array(l)
         
         #The eigenvalue list is ordered according to magnitude
@@ -482,8 +482,8 @@ def shiftQR(A, tol=1e-7, maxIter=1e3, calcQ=False):
             i += j
         
         #Add the remaining values of A's diagonal to the eigenvalue list and transform it into an array
-        for i in range(len(A))[::-1]:
-            l.append(A[i,i])
+        for j in range(len(A))[::-1]:
+            l.append(A[j,j])
         l.reverse()
         l = np.array(l)
         
@@ -604,3 +604,27 @@ def makeNewImg(r, g, b, filepath='.\\aux.png'):
     imageio.imwrite(filepath, np.array(newImg)) #picture is saved and reloaded to effectivly parse it back to uint8
     newImg=imageio.imread(filepath)
     return newImg
+
+def fiedler(c):
+    '''
+    Creates a fiedler matrix using the vector c
+
+    Parameters
+    ----------
+    c : (N) double ndarray or scalar
+        Origin vector. If it is a scalar, it is taken as the vector (1, ... , c).
+
+    Returns
+    -------
+    F : (N, N) double ndarray
+        N-by-N symmetric matrix with elements abs(c(i)-c(j)).
+    '''
+    if type(c) == int:
+        c = range(c) # doesn't actually start on 1, but the result is the same
+    F = []
+    n = len(c)
+    for i in range(n):
+        F.append([])
+        for j in range(n):
+            F[i].append(abs(c[i]-c[j]))
+    return np.array(F)
